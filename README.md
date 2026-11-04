@@ -4,6 +4,8 @@ Rehor's Restoration Console is a static cooperative workshop app for two squads.
 ConsoleDot Experience restores Memory through Corrupted Core; ConsoleDot Framework
 restores Judgment through Spectral Steeds.
 
+**App:** [https://karelhala.github.io/dnd-answers/](https://karelhala.github.io/dnd-answers/)
+
 ## Current status
 
 Batch 1 provides the application shell, squad selection, Practice/Official modes,
@@ -15,10 +17,10 @@ questions, attempt history, and Practice/Official result announcements. Batch 5
 adds the steed UI, both Official core summaries, cooperative repair, and scoped
 new-case/reset controls. The lore layer adds a mode-aware shard/Rehor overview,
 restoration trail, authored dialogue, mission briefings, and short result scenes.
-Batch 6 adds read-only CI, a manual-only Pages deployment workflow, and a persistent
-Chromium critical-path suite against the production build. Publication and the
-human presentation checks below remain separate release gates; nothing is
-automatically deployed on push.
+Batch 6 adds read-only CI, a Pages deployment workflow, and a persistent Chromium
+critical-path suite against the production build. Pushes to `main` automatically
+deploy after tests, typechecking, and the production build pass. Complete Pages
+setup and the human presentation checks below before the first release.
 
 ## Local development
 
@@ -83,11 +85,12 @@ The runner uses `.nvmrc` and an npm download cache. Failed browser runs retain
 HTML reports, screenshots, and traces for seven days. Actions use verified release
 SHAs; update each SHA and version comment together when reviewing upgrades.
 
-## GitHub Pages release — approval required
+## GitHub Pages deployment
 
 Deployment workflow: `.github/workflows/deploy-pages.yml`.
 
-- Only `workflow_dispatch` can trigger publication; no push or PR deploy trigger.
+- Every push to `main` triggers deployment after the workflow's verification passes.
+  `workflow_dispatch` remains available for manual reruns. Pull requests do not deploy.
 - Runs selected from any ref other than `main` are skipped. There is no arbitrary
   source-ref input. If the default branch is renamed, update both workflows.
 - The build job has source-read permission only, reruns all verification, and
@@ -101,19 +104,22 @@ Deployment workflow: `.github/workflows/deploy-pages.yml`.
 Read-only setup inspection returned HTTP 404 from the repository Pages API;
 Actions-based Pages configuration could not be confirmed. No settings were changed.
 
-After approval to publish:
+One-time setup and release checks:
 
-1. Review and commit the intended app, lockfile, tests, and workflows; push to
-   `main` only with approval. Wait for CI to pass.
-2. Have an authorized maintainer confirm **Settings → Pages → Build and deployment
+1. Have an authorized maintainer confirm **Settings → Pages → Build and deployment
    → Source: GitHub Actions**. Enabling/changing this is a separate approved
    repository-setting action. Check the `github-pages` environment's branch and
-   reviewer protections; permit only the intended `main` release branch.
-3. Complete the human rehearsal below on the actual presenter device/browser.
-4. With deployment approval, open **Actions → Deploy GitHub Pages → Run workflow**
-   and select `main`. Confirm the intended revision before dispatching.
+   reviewer protections; permit only the intended `main` release branch. Required
+   environment reviewers will still need to approve each deployment; retain or
+   adjust that protection deliberately to suit the desired automation.
+2. Complete the human rehearsal below on the actual presenter device/browser.
+3. Review and commit the intended app, lockfile, tests, and workflows; push or merge
+   to `main` when ready to publish. That push automatically starts verification
+   and deployment. Check **Actions → Deploy GitHub Pages** for the result.
+4. To retry a release without another push, open **Actions → Deploy GitHub Pages
+   → Run workflow** and select `main`.
 5. Open the deployment job's actual environment URL; expected project URL is
-   `https://karelhala.github.io/dnd-answers/`. Confirm JS/CSS load under
+   [https://karelhala.github.io/dnd-answers/](https://karelhala.github.io/dnd-answers/). Confirm JS/CSS load under
    `/dnd-answers/`, switch squads/modes, and directly refresh that URL. Check console
    and network for missing assets or unexpected external requests.
 6. Confirm the deployed page starts normally, contains no test fixture or private
@@ -137,7 +143,7 @@ presenter's screen-sharing experience. Record device/browser and results when ru
 - [ ] On the actual shared laptop display, run one solved and one repaired core,
   check both reward recipients, refresh, and confirm readiness means the battle
   still lies ahead. Use one presenter tab and track reward use outside the app.
-- [ ] After approved publication, repeat the base-path/asset/refresh check at the
+- [ ] After publication, repeat the base-path/asset/refresh check at the
   actual Pages URL. A successful local preview is not proof of live deployment.
 
 ## Restoration overview
