@@ -1,0 +1,15 @@
+node_modules/
+!package-lock.json
+dist/
+coverage/
+playwright-report/
+.playwright-mcp/
+test-results/
+*.tsbuildinfo
+.DS_Store
+.idea/
+.vscode/
+*.local
+.env
+.env.*
+!.env.example

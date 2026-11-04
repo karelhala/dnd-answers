@@ -1,0 +1,105 @@
+:root {
+  font-family: system-ui, sans-serif;
+  color: #f2edf8;
+  background: #14121e;
+  color-scheme: dark;
+  font-synthesis: none;
+  line-height: 1.6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+main {
+  width: min(100% - 2rem, 64rem);
+  margin: 2rem auto;
+}
+
+h1,
+h2 {
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+}
+
+.eyebrow {
+  color: #d9bbff;
+  font-weight: 600;
+}
+
+.panel {
+  margin-block: 1.5rem;
+  padding: clamp(1rem, 3vw, 2rem);
+  border: 1px solid #70627e;
+  border-radius: 0.75rem;
+  background: #211c2c;
+}
+
+fieldset {
+  min-width: 0;
+  margin: 0 0 1rem;
+  padding: 0;
+  border: 0;
+}
+
+legend {
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.choices label,
+button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid #9c8cad;
+  border-radius: 0.4rem;
+  background: #30273e;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.choices label:has(input:checked) {
+  border-color: #d9bbff;
+  background: #443252;
+}
+
+input {
+  accent-color: #d9bbff;
+}
+
+button:hover {
+  background: #443252;
+}
+
+:focus-visible {
+  outline: 3px solid #ffe098;
+  outline-offset: 4px;
+}
+
+.notice {
+  padding: 1rem;
+  border-inline-start: 3px solid #d9bbff;
+  background: #191520;
+}
+
+footer {
+  color: #c5bbcf;
+}
