@@ -10,8 +10,9 @@ Batch 1 provides the application shell, squad selection, Practice/Official modes
 and presenter acknowledgment. Batch 2 adds pure puzzle engines and follow-up
 grading, tested independently of the UI. Batch 3 adds four isolated sessions,
 reducer transitions, saved drafts, and validated local persistence. Team and mode
-controls now restore on refresh. Interactive simulators, result announcements,
-and normal repair/reset controls are not wired up yet.
+controls now restore on refresh. Batch 4 wires the full coin trial, understanding
+questions, attempt history, and Practice/Official result announcements. The steed
+UI and presenter repair/new-case/reset controls remain for batch 5.
 
 ## Local development
 
@@ -36,6 +37,30 @@ npm run preview    # Serve the production build locally
 
 Vite uses `/dnd-answers/` as its base path for the intended GitHub Pages project
 site. Deployment workflows and publication are outside this foundation batch.
+
+## Running the coin trial
+
+1. Select ConsoleDot Experience. Practice is the default on first visit; Official
+   requires a local presenter acknowledgment and never copies Practice progress.
+2. Choose fragments on the two labeled pans. Each pan must hold an equal count
+   of one to six fragments; a fragment cannot appear on both pans.
+3. Choose **Weigh fragments** to record a text outcome. Invalid selections do not
+   consume quota. After three weighings, identification remains available.
+4. After at least one weighing, select the corrupted fragment and its weight
+   direction, then **Submit identification**. Wrong answers remain correctable;
+   correct answers freeze the puzzle and open two understanding questions.
+5. Answer both questions, selecting the exact candidate set and a separate weight
+   direction for the hypothetical balance. **Check understanding** allows unlimited
+   corrections. This checks one case plus understanding, not a universal strategy.
+6. Practice shows practice-only success. Official announces one Rehor intervention
+   for ConsoleDot Experience and Alliance Surge (two shared rerolls) for ConsoleDot
+   Framework. Revisiting or refreshing the result does not grant rewards again.
+
+Pan selections, answer drafts, weighing history, and understanding progress survive
+team/mode changes and refreshes when storage is available. Attempt history is
+expandable. All controls work without drag-and-drop; results and errors use text
+and live announcements. Major phase transitions focus the next heading, while
+switching back to a saved trial does not move focus unexpectedly.
 
 ## Puzzle engines
 

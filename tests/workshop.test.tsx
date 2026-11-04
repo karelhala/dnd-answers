@@ -20,7 +20,7 @@ describe('workshop foundation', () => {
     expect(screen.getByRole('radio', { name: 'Practice' })).toBeChecked();
     expect(screen.getByRole('heading', { name: 'Corrupted Core' })).toBeVisible();
     expect(screen.getByText('Core: Memory')).toBeVisible();
-    expect(screen.getByText(/selections are retained locally/)).toBeVisible();
+    expect(screen.getByText(/Selections and progress are retained locally/)).toBeVisible();
   });
 
   it('switches squads using keyboard-accessible radio controls', async () => {

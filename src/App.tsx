@@ -3,6 +3,7 @@ import { teams } from './content/teams';
 import type { TeamId } from './content/teams';
 import { useWorkshop } from './state/WorkshopProvider';
 import type { Mode } from './state/types';
+import { CoinTrial } from './components/CoinTrial';
 
 export default function App() {
   const { state, dispatch, storageStatus, resetSavedProgress } = useWorkshop();
@@ -149,10 +150,12 @@ export default function App() {
         <h2 id="trial-heading">{team.trial}</h2>
         <p><strong>Core: {team.core}</strong></p>
         <p>{team.description}</p>
-        <p className="notice">
-          Foundation preview: interactive trials are not implemented yet.
-          Team and mode selections are retained locally when storage is available.
-        </p>
+        <p>Selections and progress are retained locally when storage is available.</p>
+        {activeTeam === 'experience' ? (
+          <CoinTrial key={state.sessions.experience[mode].caseId} session={state.sessions.experience[mode]} />
+        ) : (
+          <p className="notice">Foundation preview: interactive steed trial is not implemented yet.</p>
+        )}
       </section>
 
       <footer>
