@@ -7,8 +7,9 @@ restores Judgment through Spectral Steeds.
 ## Current status
 
 Batch 1 provides the application shell, squad selection, Practice/Official modes,
-and presenter acknowledgment. Puzzle simulators, grading, rewards, repairs, and
-persistence are not implemented yet. Selections reset on refresh.
+and presenter acknowledgment. Batch 2 adds pure puzzle engines and follow-up
+grading, tested independently of the UI. Interactive simulators, rewards,
+repairs, and persistence are not wired up yet. Selections reset on refresh.
 
 ## Local development
 
@@ -33,6 +34,29 @@ npm run preview    # Serve the production build locally
 
 Vite uses `/dnd-answers/` as its base path for the intended GitHub Pages project
 site. Deployment workflows and publication are outside this foundation batch.
+
+## Puzzle engines
+
+- `src/domain/coins.ts`: twelve-fragment cases, equal-pan validation, three-weighing
+  limit, and one-case identification. A correct answer after at least one weighing
+  opens verification; this does not prove a universal strategy or exclude guesses.
+- `src/domain/steeds.ts`: fixed speed permutations, two-to-five-steed races,
+  seven-race limit, and evidence-only unique-top-three proof. A correct hidden
+  ranking without enough observed evidence does not pass.
+- `src/domain/random.ts`: native crypto case generation with injectable uint32
+  sources, unbiased index selection, and Fisher–Yates shuffling.
+- `src/content/questions.ts` and `src/domain/verification.ts`: two fixed conceptual
+  questions per puzzle, graded by exact stable answer-ID sets. Both must pass.
+
+Domain operations return immutable next-state values or categorized failures.
+Invalid operations consume no quota. Accepted answers freeze observations while
+verification remains pending. No randomness is used after initial case creation.
+
+Engine tests cover all 24 coin cases, 150 deterministic steed permutations with
+the seven-race strategy, a noncanonical strategy, and an independent proof oracle
+enumerating compatible orders for all 1,024 forward-edge graphs on five nodes.
+These checks do not enumerate all 25! steed rankings. Deterministic strategy
+fixtures live in `src/test/fixtures.ts`, outside the application entry graph.
 
 ## Workshop boundaries
 
