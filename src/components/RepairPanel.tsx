@@ -31,6 +31,7 @@ export function RepairPanel({ session }: { session: TrialSession }) {
   return (
     <section className="trial-section" aria-label="Cooperative repair">
       <h3>Presenter action</h3>
+      <p>The alliance can restore what the trial left damaged. Cooperative repair is another restoration route, not a lesser outcome.</p>
       <p>Use cooperative repair when time ends or the trial remains incomplete. This is not authenticated access control.</p>
       <button type="button" ref={trigger} aria-expanded={open} aria-controls="repair-panel" onClick={() => {
         setConfirmations([false, false, false]);

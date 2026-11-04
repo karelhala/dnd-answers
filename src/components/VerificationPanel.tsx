@@ -31,6 +31,7 @@ export function VerificationPanel({ session, headingRef }: { session: TrialSessi
   return (
     <section aria-labelledby="verification-heading" className="trial-section">
       <h3 id="verification-heading" ref={headingRef} tabIndex={-1}>Verify your understanding</h3>
+      <p>Final reconnection check{session.mode === 'practice' ? ' — training projection' : ''}: confirm the reasoning before the core reconnects.</p>
       <p>
         {isCoins ? 'Identification accepted. Weighings and identification are now frozen.'
           : 'Ranking accepted. Races and ranking are now frozen.'}

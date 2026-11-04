@@ -216,7 +216,7 @@ describe('interactive coin trial', () => {
     let state = acceptedCoins(fixtureWorkshop(), 'official');
     state = workshopReducer(state, { type: 'CONFIRM_REPAIR', target: target(state.sessions.experience.official), at: at(20), confirmations: [true, true, true] });
     renderWorkshop(state);
-    expect(screen.getByText('Restored through cooperation')).toBeVisible();
+    expect(within(screen.getByRole('region', { name: 'Core restored' })).getByText('Restored through cooperation')).toBeVisible();
     expect(screen.getByText('ConsoleDot Framework → no additional buff from this repair.')).toBeVisible();
     expect(screen.queryByText(/Alliance Surge:/)).not.toBeInTheDocument();
   });

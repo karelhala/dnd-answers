@@ -11,16 +11,15 @@ const statusText: Record<Phase, string> = {
 export function OfficialSummary() {
   const { state } = useWorkshop();
   return (
-    <section aria-labelledby="official-summary-heading" className="panel">
-      <h2 id="official-summary-heading">Official cores</h2>
-      <ul aria-live="polite" aria-atomic="true">
+    <section aria-labelledby="official-summary-heading" className="official-status-line">
+      <h3 id="official-summary-heading">Official cores</h3>
+      <ul>
         {(Object.keys(teams) as TeamId[]).map((teamId) => (
           <li key={teamId}>
             {teams[teamId].name} — {teams[teamId].core}: {statusText[state.sessions[teamId].official.trial.phase]}
           </li>
         ))}
       </ul>
-      <p>Presenter's local Official record. Practice results do not change these statuses.</p>
     </section>
   );
 }

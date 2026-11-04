@@ -5,7 +5,9 @@ import { useWorkshop } from './state/WorkshopProvider';
 import type { Mode } from './state/types';
 import { CoinTrial } from './components/CoinTrial';
 import { SteedTrial } from './components/SteedTrial';
-import { OfficialSummary } from './components/OfficialSummary';
+import { RestorationOverview } from './components/RestorationOverview';
+import { RestorationTrail } from './components/RestorationTrail';
+import { MissionBriefing } from './components/MissionBriefing';
 import { RepairPanel } from './components/RepairPanel';
 import { ResetControls } from './components/ResetControls';
 
@@ -148,7 +150,7 @@ export default function App() {
         )}
       </section>
 
-      <OfficialSummary />
+      <RestorationOverview />
 
       <section className="panel" aria-labelledby="trial-heading">
         <p className="eyebrow" role="status">
@@ -158,6 +160,8 @@ export default function App() {
         <p><strong>Core: {team.core}</strong></p>
         <p>{team.description}</p>
         <p>Selections and progress are retained locally when storage is available.</p>
+        <MissionBriefing key={activeTeam} teamId={activeTeam} />
+        <RestorationTrail session={session} />
         {activeTeam === 'experience' ? (
           <CoinTrial key={`trial-${session.caseId}`} session={state.sessions.experience[mode]} />
         ) : (

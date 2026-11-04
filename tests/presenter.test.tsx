@@ -96,9 +96,10 @@ describe('presenter repair', () => {
     await repair(user);
     await user.click(screen.getByRole('radio', { name: 'ConsoleDot Framework' }));
     await repair(user);
-    const summary = within(screen.getByRole('region', { name: 'Official cores' }));
-    expect(summary.getByText('ConsoleDot Experience — Memory: Restored through cooperation')).toBeVisible();
-    expect(summary.getByText('ConsoleDot Framework — Judgment: Restored through cooperation')).toBeVisible();
+    const summary = within(screen.getByRole('region', { name: 'Official restoration status' }));
+    expect(summary.getAllByText('Restored through cooperation')).toHaveLength(2);
+    expect(summary.getByText(/ConsoleDot Experience/)).toBeVisible();
+    expect(summary.getByText(/ConsoleDot Framework/)).toBeVisible();
     expect(screen.getByText(/ConsoleDot Framework → 1 Rehor intervention/)).toBeVisible();
     view.unmount();
     renderWorkshop(state, storage);

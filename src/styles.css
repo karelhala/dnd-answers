@@ -154,6 +154,139 @@ summary {
   padding-inline-start: 1.5rem;
 }
 
+.restoration-overview h2,
+.restoration-trail h3 {
+  margin-block-start: 0;
+}
+
+.restoration-overview {
+  padding: 1rem;
+}
+
+.restoration-overview h2,
+.restoration-overview p {
+  margin-block: 0.5rem;
+}
+
+.restoration-system {
+  display: grid;
+  justify-items: center;
+  margin-block: 1rem;
+}
+
+.system-node {
+  display: grid;
+  gap: 0.1rem;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  text-align: center;
+  border: 1px solid #70627e;
+  border-radius: 0.4rem;
+  overflow-wrap: anywhere;
+}
+
+.restoration-system > .system-node {
+  max-width: 23rem;
+}
+
+.shard-node {
+  border-style: dashed;
+}
+
+.system-connector {
+  height: 0.75rem;
+  border-inline-start: 1px solid #9c8cad;
+}
+
+.core-nodes {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  width: 100%;
+  margin: 0;
+  padding: 0.75rem 0 0;
+  list-style: none;
+}
+
+.core-nodes::before {
+  content: '';
+  position: absolute;
+  inset: 0 25% auto;
+  border-block-start: 1px solid #9c8cad;
+}
+
+.core-nodes .system-node {
+  position: relative;
+}
+
+.core-nodes .system-node::before {
+  content: '';
+  position: absolute;
+  top: -0.75rem;
+  left: 50%;
+  height: 0.75rem;
+  border-inline-start: 1px solid #9c8cad;
+}
+
+.active-core {
+  border: 2px solid #d9bbff;
+  background: #30273e;
+}
+
+.official-status-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 1rem;
+  margin-block-start: 1rem;
+  font-size: 0.875rem;
+}
+
+.official-status-line h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.official-status-line ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.5rem;
+  margin: 0;
+  padding-inline-start: 1rem;
+}
+
+.restoration-trail {
+  margin-block: 1.5rem;
+}
+
+.trail-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  padding-inline-start: 1.5rem;
+}
+
+.trail-steps li {
+  padding: 0.4rem;
+  overflow-wrap: anywhere;
+}
+
+.trail-steps li[aria-current] {
+  outline: 1px solid #d9bbff;
+  border-radius: 0.25rem;
+}
+
+.trail-steps span {
+  display: block;
+  font-size: 0.875rem;
+}
+
+.rehor-dialogue {
+  padding-inline-start: 0.75rem;
+  border-inline-start: 2px solid #d9bbff;
+}
+
 .scenario-table {
   width: 100%;
   table-layout: fixed;
@@ -205,8 +338,14 @@ dialog::backdrop {
 }
 
 @media (max-width: 40rem) {
-  .pan-layout {
+  .pan-layout,
+  .core-nodes,
+  .trail-steps {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .core-nodes::before {
+    display: none;
   }
 }
 

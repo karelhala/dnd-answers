@@ -128,8 +128,8 @@ describe('interactive steed trial', () => {
     await user.click(candidates.getByRole('checkbox', { name: 'D1' }));
     await user.click(screen.getByRole('button', { name: 'Check understanding' }));
     expect(screen.getByRole('heading', { name: mode === 'practice' ? 'Practice complete' : 'Core restored' })).toHaveFocus();
-    const summary = within(screen.getByRole('region', { name: 'Official cores' }));
-    expect(summary.getByText(`ConsoleDot Framework — Judgment: ${mode === 'practice' ? 'Not restored' : 'Puzzle verified'}`)).toBeVisible();
+    const summary = within(screen.getByRole('region', { name: mode === 'practice' ? 'Official cores' : 'Official restoration status' }));
+    expect(summary.getByText(mode === 'practice' ? 'ConsoleDot Framework — Judgment: Not restored' : 'Puzzle verified')).toBeVisible();
     if (mode === 'official') {
       expect(screen.getByText(/ConsoleDot Framework → 1 Rehor intervention/)).toBeVisible();
       expect(screen.getByText('ConsoleDot Experience → Alliance Surge: 2 shared rerolls.')).toBeVisible();

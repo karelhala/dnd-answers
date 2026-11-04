@@ -13,8 +13,12 @@ reducer transitions, saved drafts, and validated local persistence. Team and mod
 controls now restore on refresh. Batch 4 wires the full coin trial, understanding
 questions, attempt history, and Practice/Official result announcements. Batch 5
 adds the steed UI, both Official core summaries, cooperative repair, and scoped
-new-case/reset controls. CI, deployment workflows, and the final delivery rehearsal
-remain for batch 6.
+new-case/reset controls. The lore layer adds a mode-aware shard/Rehor overview,
+restoration trail, authored dialogue, mission briefings, and short result scenes.
+Batch 6 adds read-only CI, a manual-only Pages deployment workflow, and a persistent
+Chromium critical-path suite against the production build. Publication and the
+human presentation checks below remain separate release gates; nothing is
+automatically deployed on push.
 
 ## Local development
 
@@ -35,10 +39,130 @@ npm test           # Run tests once
 npm run test:watch # Interactive test watcher
 npm run build      # Typecheck and build into dist/
 npm run preview    # Serve the production build locally
+npx playwright install chromium # One-time browser installation, after npm ci
+npm run test:e2e    # Typecheck, build, then run Chromium against production output
 ```
 
 Vite uses `/dnd-answers/` as its base path for the intended GitHub Pages project
-site. Deployment workflows and publication are outside this foundation batch.
+site. The intended origin is `https://karelhala.github.io`; actual Pages settings
+or a custom domain may differ. Preview is a local rehearsal, not publication.
+
+## Automated verification
+
+```sh
+npm ci
+npm test
+npx playwright install chromium
+npm run test:e2e
+git diff --check
+```
+
+`npm test` runs domain, state, persistence, and component tests. `test:e2e` includes
+strict typechecking of application and test code and builds once before starting
+a separate Vite preview on `http://127.0.0.1:4176/dnd-answers/`. Keep port 4176 free;
+the suite refuses to reuse an existing server or silently test a stale build.
+
+`e2e/workshop.spec.ts` covers production asset paths and direct refresh, no failed
+or third-party requests during the navigation/persistence flow, four isolated
+sessions, wrong and unsupported answers, exact-set corrections, seven-race
+Official completion, cooperative repair, readiness, terminal reload, all reset
+scopes, keyboard navigation, native modal cancellation, corrupt records, and
+storage denial. Deterministic cases enter through ordinary localStorage before
+bootstrap; no test-only endpoint, solution button, or fixture ships in the app.
+
+The browser scope is Chromium only. Reflow checks use 375px and 640px viewports
+and CSS zoom at 200%; they do **not** replace native browser zoom or screen-reader
+speech checks. Tests isolate browser contexts and use only synthetic workshop data.
+On failure, local screenshots/traces appear under ignored `test-results/`.
+Inspect a trace with `npx playwright show-trace test-results/PATH/trace.zip`.
+
+`.github/workflows/ci.yml` runs on pull requests and pushes to the verified default
+branch, `main`: lockfile install, unit/component tests, Chromium installation,
+then `test:e2e`. `build` already includes typechecking, so CI does not duplicate it.
+The runner uses `.nvmrc` and an npm download cache. Failed browser runs retain
+HTML reports, screenshots, and traces for seven days. Actions use verified release
+SHAs; update each SHA and version comment together when reviewing upgrades.
+
+## GitHub Pages release — approval required
+
+Deployment workflow: `.github/workflows/deploy-pages.yml`.
+
+- Only `workflow_dispatch` can trigger publication; no push or PR deploy trigger.
+- Runs selected from any ref other than `main` are skipped. There is no arbitrary
+  source-ref input. If the default branch is renamed, update both workflows.
+- The build job has source-read permission only, reruns all verification, and
+  uploads only `dist/` with the official Pages artifact action.
+- Only the deploy job receives `pages: write` and `id-token: write`. It uses the
+  `github-pages` environment and deploys the verified artifact without checking
+  out or running application code. Deployment concurrency is serialized.
+- `configure-pages` has automatic enablement explicitly disabled. No API key,
+  PAT, application secret, or environment file is required.
+
+Read-only setup inspection returned HTTP 404 from the repository Pages API;
+Actions-based Pages configuration could not be confirmed. No settings were changed.
+
+After approval to publish:
+
+1. Review and commit the intended app, lockfile, tests, and workflows; push to
+   `main` only with approval. Wait for CI to pass.
+2. Have an authorized maintainer confirm **Settings → Pages → Build and deployment
+   → Source: GitHub Actions**. Enabling/changing this is a separate approved
+   repository-setting action. Check the `github-pages` environment's branch and
+   reviewer protections; permit only the intended `main` release branch.
+3. Complete the human rehearsal below on the actual presenter device/browser.
+4. With deployment approval, open **Actions → Deploy GitHub Pages → Run workflow**
+   and select `main`. Confirm the intended revision before dispatching.
+5. Open the deployment job's actual environment URL; expected project URL is
+   `https://karelhala.github.io/dnd-answers/`. Confirm JS/CSS load under
+   `/dnd-answers/`, switch squads/modes, and directly refresh that URL. Check console
+   and network for missing assets or unexpected external requests.
+6. Confirm the deployed page starts normally, contains no test fixture or private
+   workshop/personnel data, and keeps Practice/Official isolated. Local rehearsal
+   storage does not transfer to the deployed origin. Remove rehearsal progress
+   with a confirmed workshop reset before the real session.
+
+### Human presentation rehearsal — still required before release
+
+Automation verifies semantics and focus, not actual screen-reader speech or the
+presenter's screen-sharing experience. Record device/browser and results when run:
+
+- [ ] Set **native browser zoom to 200%** (not CSS zoom). Check both puzzles,
+  follow-up table, overview, trail, and reset dialog: readable controls, visible
+  focus, no page-wide horizontal scrolling. Reset zoom afterward.
+- [ ] With VoiceOver/Safari or NVDA/Firefox/Chrome, navigate squads/modes, make an
+  invalid and a valid observation, accept an answer, correct verification, and
+  cancel a reset. Confirm control labels, concise result announcements, phase
+  focus, and no repeated full-dashboard announcements. The readiness heading must
+  remain discoverable; cooperative repair must say unfinished steps were bypassed.
+- [ ] On the actual shared laptop display, run one solved and one repaired core,
+  check both reward recipients, refresh, and confirm readiness means the battle
+  still lies ahead. Use one presenter tab and track reward use outside the app.
+- [ ] After approved publication, repeat the base-path/asset/refresh check at the
+  actual Pages URL. A successful local preview is not proof of live deployment.
+
+## Restoration overview
+
+The diagram shows Fullsend's shard, Rehor, and both squads' cores. Its two core
+states always come from the selected mode: **Official restoration status** uses
+Official sessions; **Training projection** uses Practice sessions and retains a
+compact Official status line. Squad switching changes emphasis, not progress.
+Fullsend's signal remains unidentified; the app does not reveal the epilogue.
+
+The restoration trail describes the current task, not an extra gate. Submit a
+finding whenever ready after the first observation; spending every observation
+is not required. Exhausting the instrument does not establish sufficient evidence.
+Cooperative repair explicitly bypasses unfinished trial steps instead of claiming
+that the puzzle or reasoning check was completed.
+
+**Mission briefing** is optional story context, separate from the operational
+rules. Rehor's short dialogue is authored, deterministic presentation using public
+session facts, never hidden answers. No AI service, new network request, or dialogue
+history is involved. Existing validation messages and rewards remain authoritative.
+
+When both Official cores are solved or repaired, **Rehor operational** means ready
+for the shared final battle, not victory or an additional reward. Resetting a core
+removes readiness. Practice readiness is labeled **Training projection operational**
+and never changes Official cores.
 
 ## Running the coin trial
 
@@ -82,8 +206,9 @@ switching back to a saved trial does not move focus unexpectedly.
 
 ## Presenter repair and resets
 
-The **Official cores** summary always shows both squads' Official outcomes,
-independent of the currently viewed team or mode.
+The **Official restoration status** overview shows both squads' Official outcomes.
+In Practice, the compact **Official cores** summary retains those outcomes beside
+the training projection, independent of the currently viewed squad.
 
 In Official mode, **Resolve through cooperative repair** is available while
 playing or completing understanding questions. The other squad leads the repair.
