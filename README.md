@@ -11,8 +11,10 @@ and presenter acknowledgment. Batch 2 adds pure puzzle engines and follow-up
 grading, tested independently of the UI. Batch 3 adds four isolated sessions,
 reducer transitions, saved drafts, and validated local persistence. Team and mode
 controls now restore on refresh. Batch 4 wires the full coin trial, understanding
-questions, attempt history, and Practice/Official result announcements. The steed
-UI and presenter repair/new-case/reset controls remain for batch 5.
+questions, attempt history, and Practice/Official result announcements. Batch 5
+adds the steed UI, both Official core summaries, cooperative repair, and scoped
+new-case/reset controls. CI, deployment workflows, and the final delivery rehearsal
+remain for batch 6.
 
 ## Local development
 
@@ -62,6 +64,59 @@ expandable. All controls work without drag-and-drop; results and errors use text
 and live announcements. Major phase transitions focus the next heading, while
 switching back to a saved trial does not move focus unexpectedly.
 
+## Running the steed trial
+
+1. Select ConsoleDot Framework and the intended mode. Select two to five steeds,
+   then **Race selected steeds**. **Clear race selection** changes only the draft.
+2. Race histories show finishing order, never times or hidden global ranks.
+   Repeated valid races consume quota; invalid selections do not.
+3. Choose first, second, and third place, then **Submit top three**. The observations
+   must uniquely establish all three positions. Unsupported guesses receive the
+   same evidence feedback whether or not they match hidden speeds.
+4. The seventh race disables racing, not ranking submission. An accepted ranking
+   freezes evidence and opens two understanding questions. The group table is
+   explicitly hypothetical and does not assume the player's actual strategy.
+5. Both questions must pass. Official success gives ConsoleDot Framework one
+   Rehor intervention and ConsoleDot Experience Alliance Surge (two shared rerolls).
+   Practice never delivers official effects.
+
+## Presenter repair and resets
+
+The **Official cores** summary always shows both squads' Official outcomes,
+independent of the currently viewed team or mode.
+
+In Official mode, **Resolve through cooperative repair** is available while
+playing or completing understanding questions. The other squad leads the repair.
+Ask the three displayed questions aloud, accept reasonable answers, and check all
+three confirmations before **Confirm repair**. No free-text answers are collected.
+Repair retains puzzle evidence and restores only the selected core, granting its
+squad one Rehor intervention but no Alliance Surge. If both cores need repair,
+confirm each separately. Solved and repaired cases cannot be repaired again.
+
+Every start-over action requires a modal confirmation stating its scope:
+
+- **Start new case:** active squad and active mode only.
+- **Reset team:** both Practice and Official for the selected squad.
+- **Reset workshop:** all four sessions and presenter acknowledgment; returns to
+  ConsoleDot Experience in Practice. This can also explicitly replace a corrupt
+  saved record after confirmation.
+
+Cancel or Escape preserves progress and returns focus to the triggering control.
+Resets affecting Official progress warn that replacing a local record is not an
+additional reward grant in an ongoing battle. The presenter still tracks reward
+usage outside this app.
+
+### Facilitator/developer solution fixture — not player instructions
+
+The canonical steed strategy uses five disjoint groups of five (five races),
+then races their winners (sixth race). Rename groups by the winners' finish order
+A through E, with members numbered by their group finish. A1 is fastest overall.
+Race A2, A3, B1, B2, and C1 seventh; the first two finishers are overall second and
+third. The validator also accepts other evidence-sufficient strategies.
+
+This repository is public client-side material. Placing the solution here is a
+documentation distinction, not a secrecy boundary.
+
 ## Puzzle engines
 
 - `src/domain/coins.ts`: twelve-fragment cases, equal-pan validation, three-weighing
@@ -102,10 +157,9 @@ failure shows a warning and leaves the app usable in memory.
 
 The most recent 100 attempt events are retained per case. Complete observation
 history is stored separately and never trimmed, because grading needs it.
-Terminal outcomes are idempotent; no mutable reward counters exist. Reducer-level
-new-case, team-reset, workshop-reset, and cooperative-repair transitions are
-implemented for later UI wiring. These require explicit confirmation; Practice
-cannot be repaired.
+Terminal outcomes are idempotent; no mutable reward counters exist. New-case,
+team-reset, workshop-reset, and cooperative-repair controls use the existing
+reducer transitions with explicit confirmation. Practice cannot be repaired.
 
 Use one presenter tab. Cross-tab synchronization is not supported. Different
 browsers, private sessions, development origins, and deployed origins do not

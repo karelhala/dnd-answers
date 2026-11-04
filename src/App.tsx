@@ -4,6 +4,10 @@ import type { TeamId } from './content/teams';
 import { useWorkshop } from './state/WorkshopProvider';
 import type { Mode } from './state/types';
 import { CoinTrial } from './components/CoinTrial';
+import { SteedTrial } from './components/SteedTrial';
+import { OfficialSummary } from './components/OfficialSummary';
+import { RepairPanel } from './components/RepairPanel';
+import { ResetControls } from './components/ResetControls';
 
 export default function App() {
   const { state, dispatch, storageStatus, resetSavedProgress } = useWorkshop();
@@ -14,6 +18,7 @@ export default function App() {
   const recoveryConfirmation = useRef<HTMLButtonElement>(null);
   const recoveryWasOpen = useRef(false);
   const team = teams[activeTeam];
+  const session = state.sessions[activeTeam][mode];
 
   useEffect(() => {
     if (confirmRecovery) recoveryConfirmation.current?.focus();
@@ -143,6 +148,8 @@ export default function App() {
         )}
       </section>
 
+      <OfficialSummary />
+
       <section className="panel" aria-labelledby="trial-heading">
         <p className="eyebrow" role="status">
           {team.name} · {mode === 'practice' ? 'Practice' : 'Official'} mode
@@ -152,10 +159,12 @@ export default function App() {
         <p>{team.description}</p>
         <p>Selections and progress are retained locally when storage is available.</p>
         {activeTeam === 'experience' ? (
-          <CoinTrial key={state.sessions.experience[mode].caseId} session={state.sessions.experience[mode]} />
+          <CoinTrial key={`trial-${session.caseId}`} session={state.sessions.experience[mode]} />
         ) : (
-          <p className="notice">Foundation preview: interactive steed trial is not implemented yet.</p>
+          <SteedTrial key={`trial-${session.caseId}`} session={state.sessions.framework[mode]} />
         )}
+        <RepairPanel key={`repair-${session.caseId}`} session={session} />
+        <ResetControls key={`${activeTeam}-${mode}`} session={session} />
       </section>
 
       <footer>

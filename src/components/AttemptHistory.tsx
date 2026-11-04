@@ -4,7 +4,7 @@ export function AttemptHistory({ events }: { events: readonly AttemptEvent[] }) 
   return (
     <details>
       <summary>Attempt history ({events.length})</summary>
-      <p>Most recent 100 events. Complete weighing evidence is retained separately.</p>
+      <p>Most recent 100 events. Complete observation evidence is retained separately.</p>
       {events.length === 0 ? <p>No attempts recorded.</p> : (
         <ol className="history">
           {events.map((event, index) => (

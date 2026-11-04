@@ -1,23 +1,25 @@
 import type { Ref } from 'react';
-import { coinQuestions } from '../content/questions';
+import { coinQuestions, steedQuestions } from '../content/questions';
 import { isCoinId } from '../domain/coins';
 import { gradeQuestion } from '../domain/verification';
 import { useWorkshop } from '../state/WorkshopProvider';
-import type { CoinSession } from '../state/types';
+import type { TrialSession } from '../state/types';
 
-export function VerificationPanel({ session, headingRef }: { session: CoinSession; headingRef: Ref<HTMLHeadingElement> }) {
+export function VerificationPanel({ session, headingRef }: { session: TrialSession; headingRef: Ref<HTMLHeadingElement> }) {
   const { dispatch } = useWorkshop();
   const target = { teamId: session.teamId, mode: session.mode, caseId: session.caseId };
-  const [countQuestion, candidatesQuestion] = coinQuestions;
+  const isCoins = session.teamId === 'experience';
+  const questions = isCoins ? coinQuestions : steedQuestions;
+  const [countQuestion, candidatesQuestion] = questions;
   const candidates = session.verification[candidatesQuestion.id] ?? [];
-  const directions = candidatesQuestion.options.filter((option) => !isCoinId(option.id));
+  const directions = isCoins ? candidatesQuestion.options.filter((option) => !isCoinId(option.id)) : [];
 
   function setAnswer(questionId: string, answer: readonly string[]) {
     dispatch({ type: 'EDIT_VERIFICATION', target, answers: { ...session.verification, [questionId]: answer } });
   }
 
   function feedback(questionId: string) {
-    const question = coinQuestions.find((item) => item.id === questionId)!;
+    const question = questions.find((item) => item.id === questionId)!;
     return session.verificationSubmitted && (
       <p id={`${questionId}-feedback`}>
         <strong>{gradeQuestion(question, session.verification[question.id]) ? 'Correct.' : 'Not yet.'}</strong>
@@ -30,7 +32,9 @@ export function VerificationPanel({ session, headingRef }: { session: CoinSessio
     <section aria-labelledby="verification-heading" className="trial-section">
       <h3 id="verification-heading" ref={headingRef} tabIndex={-1}>Verify your understanding</h3>
       <p>
-        Identification accepted. Weighings and identification are now frozen.
+        {isCoins ? 'Identification accepted. Weighings and identification are now frozen.'
+          : 'Ranking accepted. Races and ranking are now frozen.'}
+        {' '}
         Answer both questions correctly to finish this trial. Corrections are unlimited.
       </p>
       <form onSubmit={(event) => {
@@ -57,10 +61,21 @@ export function VerificationPanel({ session, headingRef }: { session: CoinSessio
         <fieldset aria-describedby={session.verificationSubmitted ? `${candidatesQuestion.id}-feedback` : undefined}>
           <legend>{candidatesQuestion.prompt}</legend>
           <p>{candidatesQuestion.scenario}</p>
+          {candidatesQuestion.groups && (
+            <table className="scenario-table">
+              <caption>Hypothetical group finishes — fastest first</caption>
+              <thead><tr><th scope="col">Group</th><th scope="col">Finishing order</th></tr></thead>
+              <tbody>
+                {candidatesQuestion.groups.map((group) => (
+                  <tr key={group.label}><th scope="row">{group.label}</th><td>{group.order.join(' → ')}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          )}
           <fieldset>
-            <legend>Possible corrupted fragments — select every candidate</legend>
+            <legend>{isCoins ? 'Possible corrupted fragments — select every candidate' : 'Remaining second/third candidates — select every candidate'}</legend>
             <div className="choices fragment-grid">
-              {candidatesQuestion.options.filter((option) => isCoinId(option.id)).map((option) => (
+              {candidatesQuestion.options.filter((option) => !isCoins || isCoinId(option.id)).map((option) => (
                 <label key={option.id}>
                   <input
                     type="checkbox" checked={candidates.includes(option.id)}
@@ -72,7 +87,7 @@ export function VerificationPanel({ session, headingRef }: { session: CoinSessio
               ))}
             </div>
           </fieldset>
-          <fieldset>
+          {isCoins && <fieldset>
             <legend>Possible weight direction</legend>
             <div className="choices">
               {directions.map((option) => (
@@ -87,7 +102,7 @@ export function VerificationPanel({ session, headingRef }: { session: CoinSessio
                 </label>
               ))}
             </div>
-          </fieldset>
+          </fieldset>}
           {feedback(candidatesQuestion.id)}
         </fieldset>
         <button type="submit">Check understanding</button>

@@ -147,6 +147,63 @@ summary {
   font-weight: 600;
 }
 
+.race-order {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 2rem;
+  padding-inline-start: 1.5rem;
+}
+
+.scenario-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  margin-block: 1rem;
+}
+
+.scenario-table th,
+.scenario-table td {
+  text-align: start;
+  padding: 0.5rem;
+  border: 1px solid #70627e;
+}
+
+.scenario-table th:first-child {
+  width: 25%;
+}
+
+.repair-questions {
+  display: grid;
+  gap: 1rem;
+}
+
+.repair-questions label {
+  display: flex;
+  align-items: start;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.repair-questions input {
+  margin-block-start: 0.4rem;
+}
+
+dialog {
+  width: min(36rem, calc(100% - 2rem));
+  max-height: calc(100% - 2rem);
+  overflow: auto;
+  padding: 1.5rem;
+  border: 1px solid #9c8cad;
+  border-radius: 0.75rem;
+  background: #211c2c;
+  color: inherit;
+}
+
+dialog::backdrop {
+  background: #000a;
+}
+
 @media (max-width: 40rem) {
   .pan-layout {
     grid-template-columns: minmax(0, 1fr);
