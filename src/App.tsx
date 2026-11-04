@@ -1,15 +1,24 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { teams } from './content/teams';
 import type { TeamId } from './content/teams';
-
-type Mode = 'practice' | 'official';
+import { useWorkshop } from './state/WorkshopProvider';
+import type { Mode } from './state/types';
 
 export default function App() {
-  const [activeTeam, setActiveTeam] = useState<TeamId>('experience');
-  const [mode, setMode] = useState<Mode>('practice');
-  const [officialAcknowledged, setOfficialAcknowledged] = useState(false);
+  const { state, dispatch, storageStatus, resetSavedProgress } = useWorkshop();
+  const { activeTeam, activeMode: mode, officialAcknowledged } = state;
   const [showAcknowledgment, setShowAcknowledgment] = useState(false);
+  const [confirmRecovery, setConfirmRecovery] = useState(false);
+  const recoveryTrigger = useRef<HTMLButtonElement>(null);
+  const recoveryConfirmation = useRef<HTMLButtonElement>(null);
+  const recoveryWasOpen = useRef(false);
   const team = teams[activeTeam];
+
+  useEffect(() => {
+    if (confirmRecovery) recoveryConfirmation.current?.focus();
+    else if (recoveryWasOpen.current) recoveryTrigger.current?.focus();
+    recoveryWasOpen.current = confirmRecovery;
+  }, [confirmRecovery]);
 
   function selectMode(nextMode: Mode) {
     if (nextMode === 'official' && !officialAcknowledged) {
@@ -18,7 +27,7 @@ export default function App() {
     }
 
     setShowAcknowledgment(false);
-    setMode(nextMode);
+    dispatch({ type: 'SELECT_MODE', mode: nextMode });
   }
 
   return (
@@ -28,6 +37,42 @@ export default function App() {
         <h1>Rehor's Restoration Console</h1>
         <p>Work together to restore Rehor's Memory and Judgment cores.</p>
       </header>
+
+      {storageStatus === 'unavailable' && (
+        <p className="notice" role="alert">
+          Progress cannot be saved in this browser. Keep this tab open.
+        </p>
+      )}
+      {storageStatus === 'recovery' && (
+        <section className="notice" aria-labelledby="recovery-heading">
+          <h2 id="recovery-heading">Saved progress needs recovery</h2>
+          <p role="alert">
+            Saved progress could not be read. The original record has not been
+            changed. You can continue in memory without saving, or reset it.
+          </p>
+          {confirmRecovery ? (
+            <div>
+              <p>
+                Reset both squads, Practice and Official, and the presenter
+                acknowledgment? This replaces all saved and current progress.
+                Resetting is not another reward grant in an ongoing battle.
+              </p>
+              <div className="choices">
+                <button type="button" ref={recoveryConfirmation} onClick={() => {
+                  resetSavedProgress();
+                  setConfirmRecovery(false);
+                  setShowAcknowledgment(false);
+                }}>
+                  Confirm reset of all progress
+                </button>
+                <button type="button" onClick={() => setConfirmRecovery(false)}>Cancel reset</button>
+              </div>
+            </div>
+          ) : (
+            <button type="button" ref={recoveryTrigger} onClick={() => setConfirmRecovery(true)}>Reset saved progress</button>
+          )}
+        </section>
+      )}
 
       <section className="panel" aria-label="Workshop controls">
         <fieldset>
@@ -40,7 +85,7 @@ export default function App() {
                   name="team"
                   value={teamId}
                   checked={activeTeam === teamId}
-                  onChange={() => setActiveTeam(teamId)}
+                  onChange={() => dispatch({ type: 'SELECT_TEAM', teamId })}
                 />
                 {teams[teamId].name}
               </label>
@@ -83,8 +128,7 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => {
-                  setOfficialAcknowledged(true);
-                  setMode('official');
+                  dispatch({ type: 'ACKNOWLEDGE_OFFICIAL' });
                   setShowAcknowledgment(false);
                 }}
               >
@@ -106,8 +150,8 @@ export default function App() {
         <p><strong>Core: {team.core}</strong></p>
         <p>{team.description}</p>
         <p className="notice">
-          Foundation preview: interactive trials and saved progress are not
-          implemented yet. Team and mode selections reset on refresh.
+          Foundation preview: interactive trials are not implemented yet.
+          Team and mode selections are retained locally when storage is available.
         </p>
       </section>
 

@@ -1,23 +1,31 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import App from '../src/App';
+import { loadWorkshop } from '../src/state/persistence';
+import { WorkshopProvider } from '../src/state/WorkshopProvider';
+
+function renderWorkshop() {
+  return render(<WorkshopProvider initial={loadWorkshop()}><App /></WorkshopProvider>);
+}
+
+beforeEach(() => localStorage.clear());
 
 describe('workshop foundation', () => {
-  it('opens the Experience trial in Practice without claiming saved progress', () => {
-    render(<App />);
+  it('opens the Experience trial in Practice with local selection persistence', () => {
+    renderWorkshop();
 
     expect(screen.getByRole('heading', { name: "Rehor's Restoration Console" })).toBeVisible();
     expect(screen.getByRole('radio', { name: 'ConsoleDot Experience' })).toBeChecked();
     expect(screen.getByRole('radio', { name: 'Practice' })).toBeChecked();
     expect(screen.getByRole('heading', { name: 'Corrupted Core' })).toBeVisible();
     expect(screen.getByText('Core: Memory')).toBeVisible();
-    expect(screen.getByText(/saved progress are not implemented yet/)).toBeVisible();
+    expect(screen.getByText(/selections are retained locally/)).toBeVisible();
   });
 
   it('switches squads using keyboard-accessible radio controls', async () => {
     const user = userEvent.setup();
-    render(<App />);
+    renderWorkshop();
 
     await user.tab();
     expect(screen.getByRole('radio', { name: 'ConsoleDot Experience' })).toHaveFocus();
@@ -31,7 +39,7 @@ describe('workshop foundation', () => {
 
   it('keeps Practice active when the presenter cancels acknowledgment', async () => {
     const user = userEvent.setup();
-    render(<App />);
+    renderWorkshop();
 
     await user.click(screen.getByRole('radio', { name: 'Official' }));
     expect(screen.getByRole('heading', { name: 'Presenter acknowledgment' })).toBeVisible();
@@ -44,7 +52,7 @@ describe('workshop foundation', () => {
 
   it('requires acknowledgment before Official and retains mode across squad switches', async () => {
     const user = userEvent.setup();
-    render(<App />);
+    renderWorkshop();
 
     await user.click(screen.getByRole('radio', { name: 'Official' }));
     await user.click(screen.getByRole('button', { name: 'Acknowledge and enter Official' }));

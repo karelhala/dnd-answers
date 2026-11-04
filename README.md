@@ -8,8 +8,10 @@ restores Judgment through Spectral Steeds.
 
 Batch 1 provides the application shell, squad selection, Practice/Official modes,
 and presenter acknowledgment. Batch 2 adds pure puzzle engines and follow-up
-grading, tested independently of the UI. Interactive simulators, rewards,
-repairs, and persistence are not wired up yet. Selections reset on refresh.
+grading, tested independently of the UI. Batch 3 adds four isolated sessions,
+reducer transitions, saved drafts, and validated local persistence. Team and mode
+controls now restore on refresh. Interactive simulators, result announcements,
+and normal repair/reset controls are not wired up yet.
 
 ## Local development
 
@@ -57,6 +59,33 @@ the seven-race strategy, a noncanonical strategy, and an independent proof oracl
 enumerating compatible orders for all 1,024 forward-edge graphs on five nodes.
 These checks do not enumerate all 25! steed rankings. Deterministic strategy
 fixtures live in `src/test/fixtures.ts`, outside the application entry graph.
+
+## Local state and recovery
+
+`src/state/` owns the workshop reducer, session creation, typed storage parser,
+and React provider. Cases, IDs, and timestamps are generated outside the reducer.
+Each squad has separate Practice and Official cases. Draft selections, primary
+answers, follow-up drafts, evidence, and terminal outcomes belong to that slot.
+Actions carry case IDs so stale submissions cannot change a replacement case.
+
+Progress uses the namespaced localStorage key `dnd-answers.workshop` with schema
+version 1. Loading replays weighings/races against the hidden case and revalidates
+accepted answers and solved verification. Unknown or malformed records are never
+silently overwritten: use the recovery notice to confirm resetting both squads
+and both modes, or continue in memory without saving. Storage denial or quota
+failure shows a warning and leaves the app usable in memory.
+
+The most recent 100 attempt events are retained per case. Complete observation
+history is stored separately and never trimmed, because grading needs it.
+Terminal outcomes are idempotent; no mutable reward counters exist. Reducer-level
+new-case, team-reset, workshop-reset, and cooperative-repair transitions are
+implemented for later UI wiring. These require explicit confirmation; Practice
+cannot be repaired.
+
+Use one presenter tab. Cross-tab synchronization is not supported. Different
+browsers, private sessions, development origins, and deployed origins do not
+share progress. Clearing site storage loses the local record. Saved state and
+hidden cases remain inspectable; validation is recovery protection, not anti-tampering.
 
 ## Workshop boundaries
 
